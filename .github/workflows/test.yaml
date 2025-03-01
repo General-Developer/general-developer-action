@@ -10,21 +10,9 @@ jobs:
       matrix:
         include:
           # check done
-          - os: macos-latest # build macos
-            build_platform_type: "mobile"
-            install_mobile_dependencies: 'false'
-          - os: macos-latest # build macos
-            install_mobile_dependencies: 'false'
-            build_platform_type: "desktop"
-          - os: ubuntu-24.04 # build linux
-            install_mobile_dependencies: 'false'
-            build_platform_type: "desktop" 
-          - os: ubuntu-24.04 # build android
-            install_mobile_dependencies: 'true'
-            build_platform_type: "mobile"       
-          - os: windows-latest # build windows
-            install_mobile_dependencies: 'false'
-            build_platform_type: "desktop"
+          - os: macos-latest # build macos  
+          - os: ubuntu-24.04 # build android 
+          - os: windows-latest # build windows 
     runs-on: ${{ matrix.os }}
     steps:  
       - name: General Developer Action
@@ -34,5 +22,7 @@ jobs:
           flutter-version: 3.29.0
           cache: true
           cache-key: "flutter-cache-${{ runner.os }}-3.29.0"
+          cache-path: "flutter-path-${{ runner.os }}-3.29.0"
           pub-cache-key: "flutter-pub-cache-${{ runner.os }}-3.29.0"
+
         
