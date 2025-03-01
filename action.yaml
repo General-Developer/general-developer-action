@@ -14,7 +14,7 @@ inputs:
     description: Cache the Flutter SDK
     required: false
     default: "true"
-  fltter_channel:
+  flutter_channel:
     description: The Flutter build release channel
     required: false
     default: stable
