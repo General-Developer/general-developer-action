@@ -18,7 +18,7 @@ jobs:
     
 
       - name: General Developer Action
-        uses: General-Developer/general-developer-action@latest
+        uses: General-Developer/general-developer-action@0.0.3
         with:
           channel: stable
           flutter-version: 3.29.0
