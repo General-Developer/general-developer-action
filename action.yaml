@@ -101,9 +101,9 @@ runs:
           -f '${{ inputs.flutter-version-file }}' \
           -a '${{ inputs.architecture }}' \
           -k '${{ inputs.cache-key }}' \
-          -c ' ' \
+          -c '${{ inputs.cache-path }}' \
           -l '${{ inputs.pub-cache-key }}' \
-          -d 'default' \
+          -d '${{ inputs.pub-cache-path }}' \
           -g '${{ inputs.git-source }}' \
           ${{ inputs.channel }}
 
@@ -111,7 +111,7 @@ runs:
       uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: "flutter-sdk-path-${{ runner.os }}"
+        path: ${{ inputs.cache-path }}
         key: ${{ inputs.cache-key }}
         restore-keys: |
           ${{ inputs.cache-key }}
@@ -120,7 +120,7 @@ runs:
       uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: "flutter-pub-path-${{ runner.os }}"
+        path: ${{ inputs.pub-cache-path }}
         key: ${{ inputs.pub-cache-key }}
         restore-keys: |
           ${{ inputs.pub-cache-key }}
@@ -132,5 +132,5 @@ runs:
         $GITHUB_ACTION_PATH/setup.sh \
           -n '${{ inputs.flutter-version }}' \
           -a '${{ inputs.architecture }}' \
-          -c ' ' \
+          -c '${{ inputs.cache-path }}' \
           ${{ inputs.channel }}

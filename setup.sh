@@ -97,7 +97,7 @@ while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 			exit 1
 		fi
 		;;
-	g) GIT_SOURCE="$OPTARG" ;;
+    g) GIT_SOURCE="$OPTARG" ;;
 	?) exit 2 ;;
 	esac
 done
@@ -237,6 +237,3 @@ fi
 	echo "$CACHE_PATH/bin/cache/dart-sdk/bin"
 	echo "$PUB_CACHE/bin"
 } >>"${GITHUB_PATH:-/dev/null}"
-
-
-# flutter finished
