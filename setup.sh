@@ -69,71 +69,71 @@ download_archive() {
 	rm "$archive_local"
 }
 
-CACHE_PATH=""
-CACHE_KEY=""
-PUB_CACHE_PATH=""
-PUB_CACHE_KEY=""
+flutter_cache_key=""
+flutter_cache_key=""
+flutter_pub_cache_key=""
+flutter_pub_cache_key=""
 PRINT_ONLY=""
 TEST_MODE=false
 ARCH=""
-VERSION=""
-VERSION_FILE=""
-GIT_SOURCE=""
+flutter_version=""
+flutter_version_file=""
+flutter_git_url=""
 
 while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 	case "$flag" in
-	c) CACHE_PATH="$OPTARG" ;;
-	k) CACHE_KEY="$OPTARG" ;;
-	d) PUB_CACHE_PATH="$OPTARG" ;;
-	l) PUB_CACHE_KEY="$OPTARG" ;;
+	c) flutter_cache_key="$OPTARG" ;;
+	k) flutter_cache_key="$OPTARG" ;;
+	d) flutter_pub_cache_key="$OPTARG" ;;
+	l) flutter_pub_cache_key="$OPTARG" ;;
 	p) PRINT_ONLY=true ;;
 	t) TEST_MODE=true ;;
 	a) ARCH="$(echo "$OPTARG" | awk '{print tolower($0)}')" ;;
-	n) VERSION="$OPTARG" ;;
+	n) flutter_version="$OPTARG" ;;
 	f)
-		VERSION_FILE="$OPTARG"
-		if [ -n "$VERSION_FILE" ] && ! check_command yq; then
+		flutter_version_file="$OPTARG"
+		if [ -n "$flutter_version_file" ] && ! check_command yq; then
 			echo "yq not found. Install it from https://mikefarah.gitbook.io/yq"
 			exit 1
 		fi
 		;;
-    g) GIT_SOURCE="$OPTARG" ;;
+    g) flutter_git_url="$OPTARG" ;;
 	?) exit 2 ;;
 	esac
 done
 
 [ -z "$ARCH" ] && ARCH="$ARCH_NAME"
 
-if [ -n "$VERSION_FILE" ]; then
-	if [ -n "$VERSION" ]; then
+if [ -n "$flutter_version_file" ]; then
+	if [ -n "$flutter_version" ]; then
 		echo "Cannot specify both a version and a version file"
 		exit 1
 	fi
 
-	VERSION="$(yq eval '.environment.flutter' "$VERSION_FILE")"
+	flutter_version="$(yq eval '.environment.flutter' "$flutter_version_file")"
 fi
 
 ARR_CHANNEL=("${@:$OPTIND:1}")
-CHANNEL="${ARR_CHANNEL[0]:-}"
+flutter_channel="${ARR_CHANNEL[0]:-}"
 
-[ -z "$CHANNEL" ] && CHANNEL=stable
-[ -z "$VERSION" ] && VERSION=any
+[ -z "$flutter_channel" ] && flutter_channel=stable
+[ -z "$flutter_version" ] && flutter_version=any
 [ -z "$ARCH" ] && ARCH=x64
-[ -z "$CACHE_PATH" ] && CACHE_PATH="$RUNNER_TOOL_CACHE/flutter/:channel:-:version:-:arch:"
-[ -z "$CACHE_KEY" ] && CACHE_KEY="flutter-:os:-:channel:-:version:-:arch:-:hash:"
-[ -z "$PUB_CACHE_KEY" ] && PUB_CACHE_KEY="flutter-pub-:os:-:channel:-:version:-:arch:-:hash:"
-[ -z "$PUB_CACHE_PATH" ] && PUB_CACHE_PATH="default"
-[ -z "$GIT_SOURCE" ] && GIT_SOURCE="https://github.com/flutter/flutter.git"
+[ -z "$flutter_cache_key" ] && flutter_cache_key="$RUNNER_TOOL_CACHE/flutter/:channel:-:version:-:arch:"
+[ -z "$flutter_cache_key" ] && flutter_cache_key="flutter-:os:-:channel:-:version:-:arch:-:hash:"
+[ -z "$flutter_pub_cache_key" ] && flutter_pub_cache_key="flutter-pub-:os:-:channel:-:version:-:arch:-:hash:"
+[ -z "$flutter_pub_cache_key" ] && flutter_pub_cache_key="default"
+[ -z "$flutter_git_url" ] && flutter_git_url="https://github.com/flutter/flutter.git"
 
 # `PUB_CACHE` is what Dart and Flutter looks for in the environment, while
-# `PUB_CACHE_PATH` is passed in from the action.
+# `flutter_pub_cache_key` is passed in from the action.
 #
 # If `PUB_CACHE` is set already, then it should continue to be used. Otherwise, satisfy it
 # if the action requests a custom path, or set to the Dart default values depending
 # on the operating system.
 if [ -z "${PUB_CACHE:-}" ]; then
-	if [ "$PUB_CACHE_PATH" != "default" ]; then
-		PUB_CACHE="$PUB_CACHE_PATH"
+	if [ "$flutter_pub_cache_key" != "default" ]; then
+		PUB_CACHE="$flutter_pub_cache_key"
 	elif [ "$OS_NAME" = "windows" ]; then
 		PUB_CACHE="$LOCALAPPDATA\\Pub\\Cache"
 	else
@@ -147,15 +147,15 @@ else
 	RELEASE_MANIFEST=$(curl --silent --connect-timeout 15 --retry 5 "$MANIFEST_URL")
 fi
 
-if [ "$CHANNEL" = "master" ] || [ "$CHANNEL" = "main" ]; then
-	VERSION_MANIFEST="{\"channel\":\"$CHANNEL\",\"version\":\"$VERSION\",\"dart_sdk_arch\":\"$ARCH\",\"hash\":\"$CHANNEL\",\"sha256\":\"$CHANNEL\"}"
+if [ "$flutter_channel" = "master" ] || [ "$flutter_channel" = "main" ]; then
+	VERSION_MANIFEST="{\"channel\":\"$flutter_channel\",\"version\":\"$flutter_version\",\"dart_sdk_arch\":\"$ARCH\",\"hash\":\"$flutter_channel\",\"sha256\":\"$flutter_channel\"}"
 else
-	VERSION_MANIFEST=$(echo "$RELEASE_MANIFEST" | filter_by_channel "$CHANNEL" | filter_by_arch "$ARCH" | filter_by_version "$VERSION")
+	VERSION_MANIFEST=$(echo "$RELEASE_MANIFEST" | filter_by_channel "$flutter_channel" | filter_by_arch "$ARCH" | filter_by_version "$flutter_version")
 fi
 
 case "$VERSION_MANIFEST" in
 *null*)
-	not_found_error "$CHANNEL" "$VERSION" "$ARCH"
+	not_found_error "$flutter_channel" "$flutter_version" "$ARCH"
 	exit 1
 	;;
 esac
@@ -177,9 +177,9 @@ expand_key() {
 	echo "$expanded_key"
 }
 
-CACHE_KEY=$(expand_key "$CACHE_KEY")
-PUB_CACHE_KEY=$(expand_key "$PUB_CACHE_KEY")
-CACHE_PATH=$(expand_key "$(transform_path "$CACHE_PATH")")
+flutter_cache_key=$(expand_key "$flutter_cache_key")
+flutter_pub_cache_key=$(expand_key "$flutter_pub_cache_key")
+flutter_cache_key=$(expand_key "$(transform_path "$flutter_cache_key")")
 
 if [ "$PRINT_ONLY" = true ]; then
 	version_info=$(echo "$VERSION_MANIFEST" | jq -j '.channel,":",.version,":",.dart_sdk_arch // "x64"')
@@ -189,51 +189,51 @@ if [ "$PRINT_ONLY" = true ]; then
 	info_architecture=$(echo "$version_info" | awk -F ':' '{print $3}')
 
 	if [ "$TEST_MODE" = true ]; then
-		echo "CHANNEL=$info_channel"
-		echo "VERSION=$info_version"
-		# VERSION_FILE is not printed, because it is essentially same as VERSION
+		echo "flutter_channel=$info_channel"
+		echo "flutter_version=$info_version"
+		# flutter_version_file is not printed, because it is essentially same as flutter_version
 		echo "ARCHITECTURE=$info_architecture"
-		echo "CACHE-KEY=$CACHE_KEY"
-		echo "CACHE-PATH=$CACHE_PATH"
-		echo "PUB-CACHE-KEY=$PUB_CACHE_KEY"
-		echo "PUB-CACHE-PATH=$PUB_CACHE"
+		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_pub_cache_key=$flutter_pub_cache_key"
+		echo "flutter_pub_cache_key=$PUB_CACHE"
 		exit 0
 	fi
 
 	{
-		echo "CHANNEL=$info_channel"
-		echo "VERSION=$info_version"
-		# VERSION_FILE is not printed, because it is essentially same as VERSION
+		echo "flutter_channel=$info_channel"
+		echo "flutter_version=$info_version"
+		# flutter_version_file is not printed, because it is essentially same as flutter_version
 		echo "ARCHITECTURE=$info_architecture"
-		echo "CACHE-KEY=$CACHE_KEY"
-		echo "CACHE-PATH=$CACHE_PATH"
-		echo "PUB-CACHE-KEY=$PUB_CACHE_KEY"
-		echo "PUB-CACHE-PATH=$PUB_CACHE"
+		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_pub_cache_key=$flutter_pub_cache_key"
+		echo "flutter_pub_cache_key=$PUB_CACHE"
 	} >>"${GITHUB_OUTPUT:-/dev/null}"
 
 	exit 0
 fi
 
-if [ ! -x "$CACHE_PATH/bin/flutter" ]; then
-	if [ "$CHANNEL" = "master" ] || [ "$CHANNEL" = "main" ]; then
-		git clone -b "$CHANNEL" "$GIT_SOURCE" "$CACHE_PATH"
-		if [ "$VERSION" != "any" ]; then
-			git config --global --add safe.directory "$CACHE_PATH"
-			(cd "$CACHE_PATH" && git checkout "$VERSION")
+if [ ! -x "$flutter_cache_key/bin/flutter" ]; then
+	if [ "$flutter_channel" = "master" ] || [ "$flutter_channel" = "main" ]; then
+		git clone -b "$flutter_channel" "$flutter_git_url" "$flutter_cache_key"
+		if [ "$flutter_version" != "any" ]; then
+			git config --global --add safe.directory "$flutter_cache_key"
+			(cd "$flutter_cache_key" && git checkout "$flutter_version")
 		fi
 	else
 		archive_url=$(echo "$VERSION_MANIFEST" | jq -r '.archive')
-		download_archive "$archive_url" "$CACHE_PATH"
+		download_archive "$archive_url" "$flutter_cache_key"
 	fi
 fi
 
 {
-	echo "FLUTTER_ROOT=$CACHE_PATH"
+	echo "FLUTTER_ROOT=$flutter_cache_key"
 	echo "PUB_CACHE=$PUB_CACHE"
 } >>"${GITHUB_ENV:-/dev/null}"
 
 {
-	echo "$CACHE_PATH/bin"
-	echo "$CACHE_PATH/bin/cache/dart-sdk/bin"
+	echo "$flutter_cache_key/bin"
+	echo "$flutter_cache_key/bin/cache/dart-sdk/bin"
 	echo "$PUB_CACHE/bin"
 } >>"${GITHUB_PATH:-/dev/null}"
