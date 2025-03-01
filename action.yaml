@@ -33,7 +33,7 @@ inputs:
   cache-path:
     description: Flutter SDK cache path
     required: false
-    default: "flutter-cache-path"
+    default: ""
   pub-cache-key:
     description: Identifier for the Dart .pub-cache cache
     required: false
@@ -41,7 +41,7 @@ inputs:
   pub-cache-path:
     description: Flutter pub cache path
     required: false
-    default: 'pub-cache-path'
+    default: default
   dry-run:
     description: If true, get outputs but do not install Flutter
     required: false
@@ -108,7 +108,7 @@ runs:
           ${{ inputs.channel }}
 
     - name: Cache Flutter
-      uses: actions/cache@v4.2.2
+      uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
         path: ${{ inputs.cache-path }}
@@ -117,7 +117,7 @@ runs:
           ${{ inputs.cache-key }}
 
     - name: Cache pub dependencies
-      uses: actions/cache@v4.2.2
+      uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
         path: ${{ inputs.pub-cache-path }}
