@@ -38,6 +38,11 @@ inputs:
     description: Git clone source
     required: false
     default: "https://github.com/flutter/flutter.git"
+
+  install_dependencies_developer:
+    description: "Install Dependencies For Developer"
+    required: false
+    default: "false"
  
 
 runs:
@@ -50,6 +55,20 @@ runs:
       if: runner.os == 'Windows'
       shell: bash
       run: choco install yq
+
+    - name: Install Dependencies Developer
+      if: ${{ inputs.install_dependencies_developer == 'true' }}
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt update -y
+          sudo apt-get install -y wget curl make git zlib1g-dev libssl-dev gperf cmake clang libc++-dev libc++abi-dev php-cli g++ ninja-build pkg-config libgtk-3-dev liblzma-dev xz-utils unzip xvfb openjdk-17-jdk ffmpeg libmpv-dev mpv
+        fi
+        # if [ "$RUNNER_OS" == "macOS" ]; then
+        # fi
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          choco install yq
+        fi
 
     - name: Make setup script executable
       shell: bash
