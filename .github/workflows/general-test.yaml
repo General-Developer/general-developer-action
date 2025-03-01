@@ -1,6 +1,6 @@
 name: General Testing
 on: 
-  workflow_dispatch:
+  workflow_dispatch: 
 jobs: 
   general-action-test:
     name: General Action Test
@@ -18,7 +18,7 @@ jobs:
     
 
       - name: General Developer Action
-        uses: General-Developer/general-developer-action@0.0.2
+        uses: General-Developer/general-developer-action@latest
         with:
           channel: stable
           flutter-version: 3.29.0
