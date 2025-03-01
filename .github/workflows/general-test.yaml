@@ -29,3 +29,6 @@ jobs:
           pub-cache-path: "flutter-pub-path-${{ runner.os }}-3.29.0"
         
         
+      - name: Flutter Version
+        run: |
+          flutter --version
