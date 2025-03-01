@@ -1,19 +1,12 @@
-name: Tesing
+name: Auto Release
 on: 
   workflow_dispatch:
+  # push:
 jobs: 
-  general-developer-action-test:
-    name: General Developer Action Test
+  general-developer-action-auto-release:
+    name: General Developer Auto Release
     timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # check done
-          - os: macos-latest # build macos  
-          - os: ubuntu-24.04 # build android 
-          - os: windows-latest # build windows 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:  
       - name: General Developer Action
         uses: General-Developer/general-developer-action@latest
