@@ -17,7 +17,7 @@ inputs:
   flutter_channel:
     description: The Flutter build release channel
     required: false
-    default: stable
+    default: "stable"
   flutter_version:
     description: The Flutter version to make available on the path
     required: false
