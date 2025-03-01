@@ -1,0 +1,5 @@
+*
+!.gitignore
+!test.yaml
+!general-test.yaml
+!auto-release.yaml
