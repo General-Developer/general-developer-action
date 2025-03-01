@@ -83,7 +83,7 @@ runs:
           ${{ inputs.channel }}
 
     - name: Cache Flutter
-      uses: actions/cache@v4
+      uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
         path: ${{ inputs.cache-path }}
@@ -92,7 +92,7 @@ runs:
           ${{ inputs.cache-key }}
 
     - name: Cache pub dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
         path: ${{ inputs.pub-cache-path }}
