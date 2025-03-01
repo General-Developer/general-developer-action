@@ -30,18 +30,18 @@ inputs:
     description: Identifier for the Flutter SDK cache
     required: false
     default: "flutter-sdk-cache-${{ runner.os }}"
-  cache-path:
-    description: Flutter SDK cache path
-    required: false
-    default: "flutter-sdk-cache-path-${{ runner.os }}"
+  # cache-path:
+  #   description: Flutter SDK cache path
+  #   required: false
+  #   default: "flutter-sdk-cache-path-${{ runner.os }}"
   pub-cache-key:
     description: Identifier for the Dart .pub-cache cache
     required: false
     default: "flutter-pub-cache-path-${{ runner.os }}"
-  pub-cache-path:
-    description: Flutter pub cache path
-    required: false
-    default: 'flutter-pub-cache-path-${{ runner.os }}'
+  # pub-cache-path:
+  #   description: Flutter pub cache path
+  #   required: false
+  #   default: 'flutter-pub-cache-path-${{ runner.os }}'
   dry-run:
     description: If true, get outputs but do not install Flutter
     required: false
@@ -111,7 +111,7 @@ runs:
       uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ inputs.cache-path }}
+        path: "flutter-sdk-path-${{ runner.os }}"
         key: ${{ inputs.cache-key }}
         restore-keys: |
           ${{ inputs.cache-key }}
@@ -120,7 +120,7 @@ runs:
       uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ inputs.pub-cache-path }}
+        path: "flutter-pub-path-${{ runner.os }}"
         key: ${{ inputs.pub-cache-key }}
         restore-keys: |
           ${{ inputs.pub-cache-key }}
