@@ -21,7 +21,7 @@ jobs:
          fetch-depth: 1
 
       - name: General Developer Action
-        uses: .
+        uses: action.yaml
       # - name: General Developer Action
         # uses: General-Developer/general-developer-action@latest
         # with:
