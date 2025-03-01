@@ -33,7 +33,7 @@ inputs:
   cache-path:
     description: Flutter SDK cache path
     required: false
-    default: ""
+    default: "flutter-cache-path"
   pub-cache-key:
     description: Identifier for the Dart .pub-cache cache
     required: false
@@ -41,7 +41,7 @@ inputs:
   pub-cache-path:
     description: Flutter pub cache path
     required: false
-    default: default
+    default: 'pub-cache-path'
   dry-run:
     description: If true, get outputs but do not install Flutter
     required: false
