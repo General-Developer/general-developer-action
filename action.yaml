@@ -43,6 +43,12 @@ inputs:
     description: "Install Dependencies For Developer"
     required: false
     default: "false"
+
+  
+  install_rust:
+    description: "Install Dependencies Rust"
+    required: false
+    default: "false"
  
   install_java:
     description: "Install Dependencies For Developer"
@@ -73,6 +79,7 @@ runs:
         # fi
         if [ "$RUNNER_OS" == "Windows" ]; then
           choco install yq
+          choco install make
         fi
 
     - name: Instaall Java
@@ -139,3 +146,34 @@ runs:
         flutter config --enable-windows-desktop
         flutter config --enable-android
         flutter config --enable-ios
+
+
+    
+    - name: Install latest Rust Nightly
+      if: ${{ inputs.install_rust == 'true' }}
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: nightly
+        components: rustfmt, clippy
+    - name: Install Perl
+      if: runner.os == 'Windows' && inputs.install_rust == 'true'
+      uses: shogo82148/actions-setup-perl@v1
+      with:
+        distribution: strawberry
+        perl-version: "5.32" 
+
+    - name: Set Windows environment variables
+      if: runner.os == 'Windows' && inputs.install_rust == 'true'
+      shell: pwsh
+      run: |
+        echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
+        echo "OPENSSL_SRC_PERL=C:/Strawberry/perl/bin/perl" >> $env:GITHUB_ENV
+
+    # See https://github.com/godot-rust/godot-rust/pull/920
+    - name: "Workaround Android NDK due to Rust bug"
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      continue-on-error: true
+      run: >
+        find -L $ANDROID_SDK_ROOT/ndk/$ANDROID_NDK_VERSION -name libunwind.a
+        -execdir sh -c 'echo "INPUT(-lunwind)" > libgcc.a' \;
