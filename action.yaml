@@ -101,9 +101,9 @@ runs:
           -f '${{ inputs.flutter-version-file }}' \
           -a '${{ inputs.architecture }}' \
           -k '${{ inputs.cache-key }}' \
-          -c '' \
+          -c ' ' \
           -l '${{ inputs.pub-cache-key }}' \
-          -d '' \
+          -d 'default' \
           -g '${{ inputs.git-source }}' \
           ${{ inputs.channel }}
 
@@ -132,5 +132,5 @@ runs:
         $GITHUB_ACTION_PATH/setup.sh \
           -n '${{ inputs.flutter-version }}' \
           -a '${{ inputs.architecture }}' \
-          -c '' \
+          -c ' ' \
           ${{ inputs.channel }}
