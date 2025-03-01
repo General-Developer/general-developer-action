@@ -121,9 +121,8 @@ runs:
       if: ${{ inputs.cache == 'true' }}
       with:
         path: ${{ inputs.pub-cache-path }}
-        key: ${{ inputs.pub-cache-key }}-${{ hashFiles('**/pubspec.lock') }}
+        key: ${{ inputs.pub-cache-key }}
         restore-keys: |
-          ${{ inputs.pub-cache-key }}-${{ hashFiles('**/pubspec.lock') }}
           ${{ inputs.pub-cache-key }}
 
     - name: Run setup script
