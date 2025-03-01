@@ -68,7 +68,7 @@ runs:
           -l '${{ inputs.flutter_pub_cache_key }}' \
           -d '${{ inputs.flutter_pub_cache_key }}' \
           -g '${{ inputs.flutter_git_url }}' \
-          ${{ inputs.fltter_channel }}
+          ${{ inputs.flutter_channel }}
 
     - name: Cache Flutter
       uses: actions/cache@v4.2.2
@@ -95,4 +95,4 @@ runs:
           -n '${{ inputs.flutter_version }}' \
           -a '${{ inputs.architecture }}' \
           -c '${{ inputs.flutter_cache_key }}' \
-          ${{ inputs.fltter_channel }}
+          ${{ inputs.flutter_channel }}
