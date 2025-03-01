@@ -48,8 +48,10 @@ jobs:
           flutter_version: 3.29.0
           is_use_cache: true
           flutter_cache_key: "flutter-path-${{ runner.os }}-3.29.0"
+          install_dependencies_developer: "true" # installing git ffmpeg mpv cmake cpp aand more
+          install_java: "true" # Instalaling java
 
-      - name: Flutter Version
+      - name: Mkdir Folder
         shell: bash
         run: |
           mkdir -p another-work
