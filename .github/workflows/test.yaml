@@ -1,6 +1,14 @@
 name: Testing
 on: 
   workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - setup.sh
+      - action.yaml
+      - .github/workflows/test.yaml
 jobs: 
   general-developer-action-test:
     name: General Developer Action Test

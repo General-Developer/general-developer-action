@@ -30,5 +30,11 @@ jobs:
         
         
       - name: Flutter Version
+        shell: bash
+        run: |
+          mkdir -p another-work
+
+      - name: Flutter Version
+        working-directory: another-work
         run: |
           flutter --version
