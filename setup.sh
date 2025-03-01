@@ -97,7 +97,7 @@ while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 			exit 1
 		fi
 		;;
-    g) GIT_SOURCE="$OPTARG" ;;
+	g) GIT_SOURCE="$OPTARG" ;;
 	?) exit 2 ;;
 	esac
 done

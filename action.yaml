@@ -51,31 +51,31 @@ inputs:
     required: false
     default: "https://github.com/flutter/flutter.git"
 
-outputs:
-  CHANNEL:
-    value: "${{ steps.flutter-action.outputs.CHANNEL }}"
-    description: The selected Flutter release channel
-  VERSION:
-    value: "${{ steps.flutter-action.outputs.VERSION }}"
-    description: The selected Flutter version
-  ARCHITECTURE:
-    value: "${{ steps.flutter-action.outputs.ARCHITECTURE }}"
-    description: The selected Flutter CPU architecture
-  CACHE-KEY:
-    value: "${{ steps.flutter-action.outputs.CACHE-KEY }}"
-    description: Key used to cache the Flutter SDK
-  CACHE-PATH:
-    value: "${{ steps.flutter-action.outputs.CACHE-PATH }}"
-    description: Path to Flutter SDK
-  PUB-CACHE-KEY:
-    value: "${{ steps.flutter-action.outputs.PUB-CACHE-KEY }}"
-    description: Key used to cache the pub dependencies
-  PUB-CACHE-PATH:
-    value: "${{ steps.flutter-action.outputs.PUB-CACHE-PATH }}"
-    description: Path to pub cache
-  GIT_SOURCE:
-    value: "${{ steps.flutter-action.outputs.GIT_SOURCE }}"
-    description: Git source of Flutter SDK repository to clone
+# outputs:
+#   CHANNEL:
+#     value: "${{ inputs.CHANNEL }}"
+#     description: The selected Flutter release channel
+#   VERSION:
+#     value: "${{ inputs.VERSION }}"
+#     description: The selected Flutter version
+#   ARCHITECTURE:
+#     value: "${{ inputs.ARCHITECTURE }}"
+#     description: The selected Flutter CPU architecture
+#   cache-key:
+#     value: "${{ inputs.cache-key }}"
+#     description: Key used to cache the Flutter SDK
+#   cache-path:
+#     value: "${{ inputs.cache-path }}"
+#     description: Path to Flutter SDK
+#   pub-cache-key:
+#     value: "${{ inputs.pub-cache-key }}"
+#     description: Key used to cache the pub dependencies
+#   pub-cache-path:
+#     value: "${{ inputs.pub-cache-path }}"
+#     description: Path to pub cache
+#   GIT_SOURCE:
+#     value: "${{ inputs.GIT_SOURCE }}"
+#     description: Git source of Flutter SDK repository to clone
 
 runs:
   using: composite
@@ -93,7 +93,7 @@ runs:
       shell: bash
 
     - name: Set action inputs
-      id: flutter-action
+      id: general-developer-action
       shell: bash
       run: |
         $GITHUB_ACTION_PATH/setup.sh -p \
@@ -111,22 +111,27 @@ runs:
       uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ steps.flutter-action.outputs.CACHE-PATH }}
-        key: ${{ steps.flutter-action.outputs.CACHE-KEY }}
-        
+        path: ${{ inputs.cache-path }}
+        key: ${{ inputs.cache-key }}
+        restore-keys: |
+          ${{ inputs.cache-key }}
+
     - name: Cache pub dependencies
       uses: actions/cache@v4
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ steps.flutter-action.outputs.PUB-CACHE-PATH }}
-        key: ${{ steps.flutter-action.outputs.PUB-CACHE-KEY }}-${{ hashFiles('**/pubspec.lock') }} 
+        path: ${{ inputs.pub-cache-path }}
+        key: ${{ inputs.pub-cache-key }}-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ inputs.pub-cache-key }}-${{ hashFiles('**/pubspec.lock') }}
+          ${{ inputs.pub-cache-key }}
 
     - name: Run setup script
       shell: bash
       if: ${{ inputs.dry-run != 'true' && inputs.dry-run != true }}
       run: |
         $GITHUB_ACTION_PATH/setup.sh \
-          -n '${{ steps.flutter-action.outputs.VERSION }}' \
-          -a '${{ steps.flutter-action.outputs.ARCHITECTURE }}' \
-          -c '${{ steps.flutter-action.outputs.CACHE-PATH }}' \
-          ${{ steps.flutter-action.outputs.CHANNEL }}
+          -n '${{ inputs.VERSION }}' \
+          -a '${{ inputs.ARCHITECTURE }}' \
+          -c '${{ inputs.cache-path }}' \
+          ${{ inputs.CHANNEL }}
