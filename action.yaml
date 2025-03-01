@@ -63,10 +63,10 @@ runs:
           -n '${{ inputs.flutter_version }}' \
           -f '${{ inputs.flutter_version_file }}' \
           -a '${{ inputs.architecture }}' \
-          -k '${{ runner.tool_cache }}/${{ inputs.flutter_cache_key }}' \
+          -k '${{ inputs.flutter_cache_key }}' \
           -c '${{ runner.tool_cache }}/${{ inputs.flutter_cache_key }}' \
           -l '${{ inputs.flutter_pub_cache_key }}' \
-          -d '${{ inputs.flutter_pub_cache_key }}' \
+          -d '${{ runner.tool_cache }}/${{ inputs.flutter_pub_cache_key }}' \
           -g '${{ inputs.flutter_git_url }}' \
           ${{ inputs.flutter_channel }}
 
@@ -75,15 +75,15 @@ runs:
       if: ${{ inputs.is_use_cache == 'true' }}
       with:
         path: ${{ runner.tool_cache }}/${{ inputs.flutter_cache_key }}
-        key: ${{ runner.tool_cache }}/${{ inputs.flutter_cache_key }}
+        key: ${{ inputs.flutter_cache_key }}
         restore-keys: |
-          ${{ runner.tool_cache }}/${{ inputs.flutter_cache_key }}
+          ${{ inputs.flutter_cache_key }}
 
     - name: Cache pub dependencies
       uses: actions/cache@v4.2.2
       if: ${{ inputs.is_use_cache == 'true' }}
       with:
-        path: ${{ inputs.flutter_pub_cache_key }}
+        path: ${{ runner.tool_cache }}/${{ inputs.flutter_pub_cache_key }}
         key: ${{ inputs.flutter_pub_cache_key }}
         restore-keys: |
           ${{ inputs.flutter_pub_cache_key }}

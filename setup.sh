@@ -69,7 +69,9 @@ download_archive() {
 	rm "$archive_local"
 }
 
+flutter_cache_path=""
 flutter_cache_key=""
+flutter_pub_cache_path=""
 flutter_pub_cache_key=""
 PRINT_ONLY=""
 TEST_MODE=false
@@ -80,9 +82,9 @@ flutter_git_url=""
 
 while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 	case "$flag" in
-	c) flutter_cache_key="$OPTARG" ;;
+	c) flutter_cache_path="$OPTARG" ;;
 	k) flutter_cache_key="$OPTARG" ;;
-	d) flutter_pub_cache_key="$OPTARG" ;;
+	d) flutter_pub_cache_path="$OPTARG" ;;
 	l) flutter_pub_cache_key="$OPTARG" ;;
 	p) PRINT_ONLY=true ;;
 	t) TEST_MODE=true ;;
@@ -95,7 +97,7 @@ while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 			exit 1
 		fi
 		;;
-	g) flutter_git_url="$OPTARG" ;;
+    g) flutter_git_url="$OPTARG" ;;
 	?) exit 2 ;;
 	esac
 done
@@ -114,24 +116,25 @@ fi
 ARR_CHANNEL=("${@:$OPTIND:1}")
 flutter_channel="${ARR_CHANNEL[0]:-}"
 
+# check if empty aand set
 [ -z "$flutter_channel" ] && flutter_channel=stable
 [ -z "$flutter_version" ] && flutter_version=any
 [ -z "$ARCH" ] && ARCH=x64
-[ -z "$flutter_cache_key" ] && flutter_cache_key="$RUNNER_TOOL_CACHE/flutter/:channel:-:version:-:arch:"
+[ -z "$flutter_cache_path" ] && flutter_cache_path="$RUNNER_TOOL_CACHE/flutter/:channel:-:version:-:arch:"
 [ -z "$flutter_cache_key" ] && flutter_cache_key="flutter-:os:-:channel:-:version:-:arch:-:hash:"
 [ -z "$flutter_pub_cache_key" ] && flutter_pub_cache_key="flutter-pub-:os:-:channel:-:version:-:arch:-:hash:"
-[ -z "$flutter_pub_cache_key" ] && flutter_pub_cache_key="default"
+[ -z "$flutter_pub_cache_path" ] && flutter_pub_cache_path="default"
 [ -z "$flutter_git_url" ] && flutter_git_url="https://github.com/flutter/flutter.git"
 
 # `PUB_CACHE` is what Dart and Flutter looks for in the environment, while
-# `flutter_pub_cache_key` is passed in from the action.
+# `flutter_pub_cache_path` is passed in from the action.
 #
 # If `PUB_CACHE` is set already, then it should continue to be used. Otherwise, satisfy it
 # if the action requests a custom path, or set to the Dart default values depending
 # on the operating system.
 if [ -z "${PUB_CACHE:-}" ]; then
-	if [ "$flutter_pub_cache_key" != "default" ]; then
-		PUB_CACHE="$flutter_pub_cache_key"
+	if [ "$flutter_pub_cache_path" != "default" ]; then
+		PUB_CACHE="$flutter_pub_cache_path"
 	elif [ "$OS_NAME" = "windows" ]; then
 		PUB_CACHE="$LOCALAPPDATA\\Pub\\Cache"
 	else
@@ -177,7 +180,7 @@ expand_key() {
 
 flutter_cache_key=$(expand_key "$flutter_cache_key")
 flutter_pub_cache_key=$(expand_key "$flutter_pub_cache_key")
-flutter_cache_key=$(expand_key "$(transform_path "$flutter_cache_key")")
+flutter_cache_path=$(expand_key "$(transform_path "$flutter_cache_path")")
 
 if [ "$PRINT_ONLY" = true ]; then
 	version_info=$(echo "$VERSION_MANIFEST" | jq -j '.channel,":",.version,":",.dart_sdk_arch // "x64"')
@@ -192,9 +195,9 @@ if [ "$PRINT_ONLY" = true ]; then
 		# flutter_version_file is not printed, because it is essentially same as flutter_version
 		echo "ARCHITECTURE=$info_architecture"
 		echo "flutter_cache_key=$flutter_cache_key"
-		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_cache_path=$flutter_cache_path"
 		echo "flutter_pub_cache_key=$flutter_pub_cache_key"
-		echo "flutter_pub_cache_key=$PUB_CACHE"
+		echo "flutter_pub_cache_path=$PUB_CACHE"
 		exit 0
 	fi
 
@@ -204,34 +207,34 @@ if [ "$PRINT_ONLY" = true ]; then
 		# flutter_version_file is not printed, because it is essentially same as flutter_version
 		echo "ARCHITECTURE=$info_architecture"
 		echo "flutter_cache_key=$flutter_cache_key"
-		echo "flutter_cache_key=$flutter_cache_key"
+		echo "flutter_cache_path=$flutter_cache_path"
 		echo "flutter_pub_cache_key=$flutter_pub_cache_key"
-		echo "flutter_pub_cache_key=$PUB_CACHE"
+		echo "flutter_pub_cache_path=$PUB_CACHE"
 	} >>"${GITHUB_OUTPUT:-/dev/null}"
 
 	exit 0
 fi
 
-if [ ! -x "$flutter_cache_key/bin/flutter" ]; then
+if [ ! -x "$flutter_cache_path/bin/flutter" ]; then
 	if [ "$flutter_channel" = "master" ] || [ "$flutter_channel" = "main" ]; then
-		git clone -b "$flutter_channel" "$flutter_git_url" "$flutter_cache_key"
+		git clone -b "$flutter_channel" "$flutter_git_url" "$flutter_cache_path"
 		if [ "$flutter_version" != "any" ]; then
-			git config --global --add safe.directory "$flutter_cache_key"
-			(cd "$flutter_cache_key" && git checkout "$flutter_version")
+			git config --global --add safe.directory "$flutter_cache_path"
+			(cd "$flutter_cache_path" && git checkout "$flutter_version")
 		fi
 	else
 		archive_url=$(echo "$VERSION_MANIFEST" | jq -r '.archive')
-		download_archive "$archive_url" "$flutter_cache_key"
+		download_archive "$archive_url" "$flutter_cache_path"
 	fi
 fi
 
 {
-	echo "FLUTTER_ROOT=$flutter_cache_key"
+	echo "FLUTTER_ROOT=$flutter_cache_path"
 	echo "PUB_CACHE=$PUB_CACHE"
 } >>"${GITHUB_ENV:-/dev/null}"
 
 {
-	echo "$flutter_cache_key/bin"
-	echo "$flutter_cache_key/bin/cache/dart-sdk/bin"
+	echo "$flutter_cache_path/bin"
+	echo "$flutter_cache_path/bin/cache/dart-sdk/bin"
 	echo "$PUB_CACHE/bin"
 } >>"${GITHUB_PATH:-/dev/null}"
