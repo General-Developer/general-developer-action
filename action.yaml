@@ -52,14 +52,14 @@ inputs:
     default: "https://github.com/flutter/flutter.git"
 
 # outputs:
-#   CHANNEL:
-#     value: "${{ inputs.CHANNEL }}"
+#   channel:
+#     value: "${{ inputs.channel }}"
 #     description: The selected Flutter release channel
-#   VERSION:
-#     value: "${{ inputs.VERSION }}"
+#   flutter-version:
+#     value: "${{ inputs.flutter-version }}"
 #     description: The selected Flutter version
-#   ARCHITECTURE:
-#     value: "${{ inputs.ARCHITECTURE }}"
+#   architecture:
+#     value: "${{ inputs.architecture }}"
 #     description: The selected Flutter CPU architecture
 #   cache-key:
 #     value: "${{ inputs.cache-key }}"
@@ -85,12 +85,12 @@ runs:
     # See https://github.com/actions/runner-images/issues/7443#issuecomment-1514597691
     - name: Make yq tool available on Windows runners
       if: runner.os == 'Windows'
-      run: choco install yq
       shell: bash
+      run: choco install yq
 
     - name: Make setup script executable
-      run: chmod +x "$GITHUB_ACTION_PATH/setup.sh"
       shell: bash
+      run: chmod +x "$GITHUB_ACTION_PATH/setup.sh"
 
     - name: Set action inputs
       id: general-developer-action
@@ -130,7 +130,7 @@ runs:
       if: ${{ inputs.dry-run != 'true' && inputs.dry-run != true }}
       run: |
         $GITHUB_ACTION_PATH/setup.sh \
-          -n '${{ inputs.VERSION }}' \
-          -a '${{ inputs.ARCHITECTURE }}' \
+          -n '${{ inputs.flutter-version }}' \
+          -a '${{ inputs.architecture }}' \
           -c '${{ inputs.cache-path }}' \
-          ${{ inputs.CHANNEL }}
+          ${{ inputs.channel }}
