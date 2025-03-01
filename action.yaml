@@ -63,8 +63,8 @@ runs:
           -n '${{ inputs.flutter_version }}' \
           -f '${{ inputs.flutter_version_file }}' \
           -a '${{ inputs.architecture }}' \
-          -k '${{ inputs.flutter_cache_key }}' \
-          -c '${{ inputs.flutter_cache_key }}' \
+          -k '$RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}' \
+          -c '$RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}' \
           -l '${{ inputs.flutter_pub_cache_key }}' \
           -d '${{ inputs.flutter_pub_cache_key }}' \
           -g '${{ inputs.flutter_git_url }}' \
@@ -74,10 +74,10 @@ runs:
       uses: actions/cache@v4.2.2
       if: ${{ inputs.is_use_cache == 'true' }}
       with:
-        path: ${{ inputs.flutter_cache_key }}
-        key: ${{ inputs.flutter_cache_key }}
+        path: $RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}
+        key: $RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}
         restore-keys: |
-          ${{ inputs.flutter_cache_key }}
+          $RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}
 
     - name: Cache pub dependencies
       uses: actions/cache@v4.2.2
@@ -94,5 +94,5 @@ runs:
         $GITHUB_ACTION_PATH/setup.sh \
           -n '${{ inputs.flutter_version }}' \
           -a '${{ inputs.architecture }}' \
-          -c '${{ inputs.flutter_cache_key }}' \
+          -c '$RUNNER_TOOL_CACHE${{ inputs.flutter_cache_key }}' \
           ${{ inputs.flutter_channel }}

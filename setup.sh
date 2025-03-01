@@ -70,8 +70,6 @@ download_archive() {
 }
 
 flutter_cache_key=""
-flutter_cache_key=""
-flutter_pub_cache_key=""
 flutter_pub_cache_key=""
 PRINT_ONLY=""
 TEST_MODE=false
@@ -97,7 +95,7 @@ while getopts 'tc:k:d:l:pa:n:f:g:' flag; do
 			exit 1
 		fi
 		;;
-    g) flutter_git_url="$OPTARG" ;;
+	g) flutter_git_url="$OPTARG" ;;
 	?) exit 2 ;;
 	esac
 done
