@@ -32,14 +32,9 @@ jobs:
       - name: General Developer Action
         uses: ./general-developer-action
         with:
-          channel: stable
-          flutter-version: 3.29.0
-          cache: true
-          # cache-key: "flutter-cache-${{ runner.os }}-3.29.0"
-          # cache-path: "flutter-path-${{ runner.os }}-3.29.0"
-          # pub-cache-key: "flutter-pub-cache-${{ runner.os }}-3.29.0"
-          # pub-cache-path: "flutter-pub-path-${{ runner.os }}-3.29.0"
-
+          flutter_channel: stable
+          flutter_version: 3.29.0
+          is_use_cache: true
           flutter_cache_key: "test-flutter-path-${{ runner.os }}-3.29.0"
           flutter_pub_cache_key: "test-flutter-pub-cache-${{ runner.os }}-3.29.0"
         
