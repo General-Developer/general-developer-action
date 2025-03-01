@@ -237,3 +237,6 @@ fi
 	echo "$CACHE_PATH/bin/cache/dart-sdk/bin"
 	echo "$PUB_CACHE/bin"
 } >>"${GITHUB_PATH:-/dev/null}"
+
+
+# flutter finished
