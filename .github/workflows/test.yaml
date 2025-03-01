@@ -1,4 +1,4 @@
-name: Tesing
+name: Testing
 on: 
   workflow_dispatch:
 jobs: 
@@ -15,15 +15,22 @@ jobs:
           - os: windows-latest # build windows 
     runs-on: ${{ matrix.os }}
     steps:  
-      - name: General Developer Action
-        uses: General-Developer/general-developer-action@latest
+
+      - uses: actions/checkout@v4
         with:
-          channel: stable
-          flutter-version: 3.29.0
-          cache: true
-          # cache-key: "flutter-cache-${{ runner.os }}-3.29.0"
-          # cache-path: "flutter-path-${{ runner.os }}-3.29.0"
-          # pub-cache-key: "flutter-pub-cache-${{ runner.os }}-3.29.0"
-          # pub-cache-path: "flutter-pub-path-${{ runner.os }}-3.29.0"
+         fetch-depth: 1
+
+      - name: General Developer Action
+        uses: .
+      # - name: General Developer Action
+        # uses: General-Developer/general-developer-action@latest
+        # with:
+        #   channel: stable
+        #   flutter-version: 3.29.0
+        #   cache: true
+        #   # cache-key: "flutter-cache-${{ runner.os }}-3.29.0"
+        #   # cache-path: "flutter-path-${{ runner.os }}-3.29.0"
+        #   # pub-cache-key: "flutter-pub-cache-${{ runner.os }}-3.29.0"
+        #   # pub-cache-path: "flutter-pub-path-${{ runner.os }}-3.29.0"
 
         
