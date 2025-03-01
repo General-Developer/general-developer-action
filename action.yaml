@@ -30,18 +30,18 @@ inputs:
     description: Identifier for the Flutter SDK cache
     required: false
     default: "flutter-sdk-cache-${{ runner.os }}"
-  # cache-path:
-  #   description: Flutter SDK cache path
-  #   required: false
-  #   default: "flutter-sdk-cache-path-${{ runner.os }}"
+  cache-path:
+    description: Flutter SDK cache path
+    required: false
+    default: ''
   pub-cache-key:
     description: Identifier for the Dart .pub-cache cache
     required: false
     default: "flutter-pub-cache-path-${{ runner.os }}"
-  # pub-cache-path:
-  #   description: Flutter pub cache path
-  #   required: false
-  #   default: 'flutter-pub-cache-path-${{ runner.os }}'
+  pub-cache-path:
+    description: Flutter pub cache path
+    required: false
+    default: default
   dry-run:
     description: If true, get outputs but do not install Flutter
     required: false
@@ -50,32 +50,7 @@ inputs:
     description: Git clone source
     required: false
     default: "https://github.com/flutter/flutter.git"
-
-# outputs:
-#   channel:
-#     value: "${{ inputs.channel }}"
-#     description: The selected Flutter release channel
-#   flutter-version:
-#     value: "${{ inputs.flutter-version }}"
-#     description: The selected Flutter version
-#   architecture:
-#     value: "${{ inputs.architecture }}"
-#     description: The selected Flutter CPU architecture
-#   cache-key:
-#     value: "${{ inputs.cache-key }}"
-#     description: Key used to cache the Flutter SDK
-#   cache-path:
-#     value: "${{ inputs.cache-path }}"
-#     description: Path to Flutter SDK
-#   pub-cache-key:
-#     value: "${{ inputs.pub-cache-key }}"
-#     description: Key used to cache the pub dependencies
-#   pub-cache-path:
-#     value: "${{ inputs.pub-cache-path }}"
-#     description: Path to pub cache
-#   GIT_SOURCE:
-#     value: "${{ inputs.GIT_SOURCE }}"
-#     description: Git source of Flutter SDK repository to clone
+ 
 
 runs:
   using: composite
