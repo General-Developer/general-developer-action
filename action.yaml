@@ -26,6 +26,14 @@ inputs:
     description: Cache the Flutter SDK
     required: false
     default: "true"
+  flutter_cache_key:
+    description: Identifier for the Flutter SDK cache
+    required: false
+    default: "flutter-sdk-cache-${{ runner.os }}"
+  flutter_pub_cache_key:
+    description: Identifier for the Flutter SDK cache
+    required: false
+    default: "flutter-pub-sdk-cache-${{ runner.os }}"
   cache-key:
     description: Identifier for the Flutter SDK cache
     required: false
@@ -75,10 +83,10 @@ runs:
           -n '${{ inputs.flutter-version }}' \
           -f '${{ inputs.flutter-version-file }}' \
           -a '${{ inputs.architecture }}' \
-          -k '${{ inputs.cache-key }}' \
-          -c '${{ inputs.cache-path }}' \
-          -l '${{ inputs.pub-cache-key }}' \
-          -d '${{ inputs.pub-cache-path }}' \
+          -k '${{ inputs.flutter_cache_key }}' \
+          -c '${{ inputs.flutter_cache_key }}' \
+          -l '${{ inputs.flutter_pub_cache_key }}' \
+          -d '${{ inputs.flutter_pub_cache_key }}' \
           -g '${{ inputs.git-source }}' \
           ${{ inputs.channel }}
 
@@ -86,19 +94,19 @@ runs:
       uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ inputs.cache-path }}
-        key: ${{ inputs.cache-key }}
+        path: ${{ inputs.flutter_cache_key }}
+        key: ${{ inputs.flutter_cache_key }}
         restore-keys: |
-          ${{ inputs.cache-key }}
+          ${{ inputs.flutter_cache_key }}
 
     - name: Cache pub dependencies
       uses: actions/cache@v4.2.2
       if: ${{ inputs.cache == 'true' }}
       with:
-        path: ${{ inputs.pub-cache-path }}
-        key: ${{ inputs.pub-cache-key }}
+        path: ${{ inputs.flutter_pub_cache_key }}
+        key: ${{ inputs.flutter_pub_cache_key }}
         restore-keys: |
-          ${{ inputs.pub-cache-key }}
+          ${{ inputs.flutter_pub_cache_key }}
 
     - name: Run setup script
       shell: bash
@@ -107,5 +115,5 @@ runs:
         $GITHUB_ACTION_PATH/setup.sh \
           -n '${{ inputs.flutter-version }}' \
           -a '${{ inputs.architecture }}' \
-          -c '${{ inputs.cache-path }}' \
+          -c '${{ inputs.flutter_cache_key }}' \
           ${{ inputs.channel }}
