@@ -19,7 +19,12 @@ jobs:
 
       - name: General Developer Action
         uses: General-Developer/general-developer-action@0.0.5
-  
+        with:
+          flutter_channel: stable
+          flutter_version: 3.29.0
+          is_use_cache: true
+          flutter_cache_key: "flutter-path-${{ runner.os }}-3.29.0"
+
       - name: Flutter Version
         shell: bash
         run: |
