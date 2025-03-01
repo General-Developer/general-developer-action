@@ -62,3 +62,36 @@ jobs:
         working-directory: another-work
         run: |
           flutter --version
+
+
+
+  general-action-test-full-features:
+    name: General Action Test Full Features
+    timeout-minutes: 30
+    strategy:
+      # fail-fast: true
+      matrix:
+        include:
+          # check done
+          - os: macos-latest # build macos  
+          - os: ubuntu-24.04 # build android 
+          - os: windows-latest # build windows 
+    runs-on: ${{ matrix.os }}
+    steps:  
+    
+
+      - name: General Developer Action
+        uses: General-Developer/general-developer-action@0.0.7
+        with:
+          install_dependencies_developer: "true"
+          install_java: "true"
+
+      - name: Flutter Version
+        shell: bash
+        run: |
+          mkdir -p another-work
+
+      - name: Flutter Version
+        working-directory: another-work
+        run: |
+          flutter --version
